@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "iventy": "https://neosatan:h7CRpu2VQDHPQy34Lhd5@bitbucket.org/neosatan/iventy.git"
+  },
   "author": "Pawel Kuznik <pawel.kuznik@gmail.com>",
   "license": "ISC"
 }
