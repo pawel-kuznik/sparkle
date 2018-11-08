@@ -7,5 +7,6 @@
 // this is the public interface of the library
 module.exports = {
     Component: require('./lib/Component.js'),
+    Container: require('./lib/Container.js'),
     List: require('./lib/List.js')
 };
