@@ -10,5 +10,5 @@ module.exports = {
     Container: require('./lib/Container.js'),
     List: require('./lib/List.js'),
     formToJSON: require('./lib/formToJSON.js'),
-    fillForm: require('./lib/FillForm.js')
+    fillForm: require('./lib/fillForm.js')
 };
