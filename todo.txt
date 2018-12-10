@@ -6,3 +6,4 @@ IDEAS
 -   Create a component-managed list of DOM handlers? This way they could be cleaned when the component is uninstalled.
 -   Component.remove() should also terminate any template loading process and put the object in inert state.
 -   Create a router? This was solved so many times. Is there a point of having a custom router?
+-   Add an adopt() and release() methods to assign components into a child-parent relation
