@@ -10,5 +10,6 @@ module.exports = {
     Container:  require('./lib/Container.js'),
     Form:       require('./lib/Form.js'),
     List:       require('./lib/List.js'),
-    form:       require('./lib/form.js')
+    form:       require('./lib/form.js'),
+    object:     require('./lib/object.js')
 };

@@ -5,7 +5,7 @@
  */
 
 // declare the test for the function 
-describe('toJSON()', () => {
+describe('form.toJSON()', () => {
 
     // the function should fill in input inside a form
     it('should fill in the elements in the form', () => {

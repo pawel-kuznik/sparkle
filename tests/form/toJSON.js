@@ -5,7 +5,7 @@
  */
 
 // declare the test for the function 
-describe('toJSON()', () => {
+describe('form.toJSON()', () => {
 
     // the function should always return an object.
     it('should return an object', () => {
