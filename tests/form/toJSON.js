@@ -4,9 +4,6 @@
  *  @author     Pawel Kuznik <pawel.kuznik@gmail.com>
  */
 
-// get the expect into local scope
-const expect = chai.expect;
-
 // declare the test for the function 
 describe('toJSON()', () => {
 
