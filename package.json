@@ -4,11 +4,17 @@
   "description": "A modern and lightweight view library for JS.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test":     "echo \"Error: no test specified\" && exit 1",
+    "build":    "mkdir -p build && node node_modules/.bin/browserify build.js > build/sparkle.js"
   },
   "dependencies": {
     "iventy": "github:pawel-kuznik/iventy"
   },
   "author": "Pawel Kuznik <pawel.kuznik@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
 }
