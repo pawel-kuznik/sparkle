@@ -8,7 +8,7 @@
 describe('Component', () => {
 
     // we want to test the append method
-    describe('#append()', () => {
+    describe('.append()', () => {
 
         // we want to have support for components
         it('should append another component', () => {
@@ -38,5 +38,37 @@ describe('Component', () => {
             expect(b.parentElement).to.be.equal(a.elem);
         });
 
+    });
+
+    // we weant to test the appendTo method
+    describe('.appendTo()', () => {
+
+        // test a case when we want to append to another component
+        it('should append to a component', () => {
+
+            // make 2 components
+            let a = new sparkle.Component();
+            let b = new sparkle.Component();
+
+            // make the append
+            a.appendTo(b);
+
+            // expect that a is under b
+            expect(a.elem.parentElement).to.be.equal(b.elem);
+        });
+
+        // test a case when we want to append to an element
+        it('should append to a component', () => {
+
+            // make 2 components
+            let a = new sparkle.Component();
+            let b = document.createElement('SPAN');
+
+            // make the append
+            a.appendTo(b);
+
+            // expect that a is under b
+            expect(a.elem.parentElement).to.be.equal(b);
+        });
     });
 });
