@@ -6,9 +6,9 @@
 
 // this is the public interface of the library
 module.exports = {
-    Component: require('./lib/Component.js'),
-    Container: require('./lib/Container.js'),
-    List: require('./lib/List.js'),
-    formToJSON: require('./lib/formToJSON.js'),
-    fillForm: require('./lib/fillForm.js')
+    Component:  require('./lib/Component.js'),
+    Container:  require('./lib/Container.js'),
+    Form:       require('./lib/Form.js'),
+    List:       require('./lib/List.js'),
+    form:       require('./lib/form.js')
 };
