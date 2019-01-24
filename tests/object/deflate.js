@@ -1,11 +1,11 @@
 /**
- *  This is a test script for object.flatten() function.
+ *  This is a test script for object.deflate() function.
  *
  *  @author     Paweł Kuźnik <pawel.kuznik@gmail.com>
  */
 
 // tell that we are testing a function
-describe('object.flatten()', () => {
+describe('object.deflate()', () => {
 
     // we want the function to work on flat objects and produce pretty much the
     // same object in return
@@ -14,8 +14,8 @@ describe('object.flatten()', () => {
         // the test object
         let obj = { foo: 'a', baz: 'b' };
 
-        // flatten the object
-        let result = sparkle.object.flatten(obj);
+        // deflate the object
+        let result = sparkle.object.deflate(obj);
 
         // check if both propertie are there
         expect(result).to.have.property('foo').that.is.equal('a');
@@ -28,8 +28,8 @@ describe('object.flatten()', () => {
         // a deep object
         let obj = { foo: { baz: 'a' }, a: { b: { c: 'b' } } };
 
-        // flatten the object
-        let result= sparkle.object.flatten(obj);
+        // deflate the object
+        let result= sparkle.object.deflate(obj);
 
         // check if the deep property was recognized
         expect(result).to.have.property('foo.baz').that.is.equal('a');
