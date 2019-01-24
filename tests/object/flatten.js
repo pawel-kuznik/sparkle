@@ -1,11 +1,11 @@
 /**
- *  This is a test script for object.getMany() function.
+ *  This is a test script for object.flatten() function.
  *
  *  @author     Paweł Kuźnik <pawel.kuznik@gmail.com>
  */
 
 // tell that we are testing a function
-describe('object.getMany()', () => {
+describe('object.flatten()', () => {
 
     // we want the function to work on flat objects and produce pretty much the
     // same object in return
@@ -15,7 +15,7 @@ describe('object.getMany()', () => {
         let obj = { foo: 'a', baz: 'b' };
 
         // flatten the object
-        let result = sparkle.object.getMany(obj);
+        let result = sparkle.object.flatten(obj);
 
         // check if both propertie are there
         expect(result).to.have.property('foo').that.is.equal('a');
@@ -29,7 +29,7 @@ describe('object.getMany()', () => {
         let obj = { foo: { baz: 'a' }, a: { b: { c: 'b' } } };
 
         // flatten the object
-        let result= sparkle.object.getMany(obj);
+        let result= sparkle.object.flatten(obj);
 
         // check if the deep property was recognized
         expect(result).to.have.property('foo.baz').that.is.equal('a');
