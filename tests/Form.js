@@ -7,6 +7,19 @@
 // tell that we are testing Form class
 describe('Form', () => {
 
+    describe('.data', () => {
+
+        it('should be assigned from the constructor', () => {
+
+            // make the component
+            let init = { foo: 'a' };
+            let comp = new sparkle.Form({ data: init });
+
+            // make sure it's the same object
+            expect(comp.data).to.be.equal(init);
+        });
+    });
+
     // we want to test if the submit event is properly triggered
     describe('+submit', () => {
 
@@ -51,6 +64,136 @@ describe('Form', () => {
             // call the form
             form.submit();
         });
+    });
 
+    describe('.fill()', () => {
+
+        it('should update the form fields', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            form.appendChild(input);
+
+            // the object to fill the form with
+            let obj = { foo: 'a' };
+
+            // create a component form
+            let comp = new sparkle.Form({ elem: form });
+
+            // fill the component form with data
+            comp.fill(obj);
+
+            // expect the input to be filled in
+            expect(input.value).to.be.equal('a');
+        });
+
+        it('should update the form field identified by accessor', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo.baz');
+            form.appendChild(input);
+
+            // the object to fill the form with
+            let obj = { foo: { baz: 'a' } };
+
+            // create a component form
+            let comp = new sparkle.Form({ elem: form });
+
+            // fill the component form with data
+            comp.fill(obj);
+
+            // expect the input to be filled in
+            expect(input.value).to.be.equal('a');
+        });
+    });
+
+    describe('.assign()', () => {
+
+        it('should assign simple data to an object', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            input.value = 'a';
+            form.appendChild(input);
+
+            // the object to fill the form with
+            let obj = { };
+
+            // create a component form
+            let comp = new sparkle.Form({ elem: form });
+
+            // fill the component form with data
+            comp.assign(obj);
+
+            // expect the input to be filled in
+            expect(obj).to.have.property('foo').that.is.equal('a');
+        });
+
+        it('should assign data identified by accessor', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo.baz');
+            input.value = 'a';
+            form.appendChild(input);
+
+            // the object to fill in with data
+            let obj = { };
+
+            // create a component
+            let comp = new sparkle.Form({ elem: form });
+
+            // assign data
+            comp.assign(obj);
+
+            // make sure that we have a deep object
+            expect(obj).to.have.property('foo').that.has.property('baz').that.is.equal('a');
+        });
+    });
+
+    describe('.push()', () => {
+        
+        it('should update the data object', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            input.value = 'a';
+            form.appendChild(input);
+            let comp = new sparkle.Form({ elem: form });
+
+            // make the push
+            comp.push();
+
+            // expect that the form data has the property and it has proper value
+            expect(comp.data).to.have.property('foo').that.is.equal('a');
+        });
+    });
+
+    describe('.pull()', () => {
+
+        it('should update the form elements', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            form.appendChild(input);
+            let comp = new sparkle.Form({ elem: form, data: { foo: 'a' } });
+
+            // make the push
+            comp.pull();
+
+            // expect that the form data has the property and it has proper value
+            expect(input.value).to.be.equal('a');
+        });
     });
 });
