@@ -196,4 +196,40 @@ describe('Form', () => {
             expect(input.value).to.be.equal('a');
         });
     });
+
+
+    describe('.submit()', () => {
+
+        it('should apply current data state on the data object', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            input.value = 'baz';
+            form.appendChild(input);
+            let comp = new sparkle.Form({ elem: form, data: { } });
+
+            // submit the form state
+            comp.submit();
+
+            // expect form data to have new values
+            expect(comp.data).to.have.property('foo').that.be.equal('baz');
+        });
+
+        it('should trigger submitted event', (done) => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let comp = new sparkle.Form({ elem: form, data: { } });
+
+            // install on submit handler
+            comp.on('submitted', () => {
+                done();
+            });
+
+            // submit the form state
+            comp.submit();
+        });
+    });
 });
