@@ -7,6 +7,31 @@
 // announce that we are testing Component class
 describe('Component', () => {
 
+    describe('.compose()', () => {
+
+        const Base = class extends sparkle.Component {
+
+            constructor(options) {
+
+                super(options);
+
+                this.test = options.test;
+            }
+        };
+
+        it('should return a new class with locked settings object', () => {
+
+            // compose new class
+            let A = Base.compose({ test: 'a' });
+
+            // make an instance
+            let a = new A();
+
+            // check if really locked
+            expect(a.test).to.be.equal('a');
+        });
+    });
+
     // we want to test the append method
     describe('.append()', () => {
 
