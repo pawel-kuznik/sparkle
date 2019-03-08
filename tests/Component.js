@@ -30,6 +30,18 @@ describe('Component', () => {
             // check if really locked
             expect(a.test).to.be.equal('a');
         });
+
+        it('should return a new class with locked settings function', () => {
+
+            // compose new class
+            let A = Base.compose(() => { return { test: 'a' }; });
+
+            // make an instance
+            let a = new A();
+
+            // check if really locked
+            expect(a.test).to.be.equal('a');
+        });
     });
 
     // we want to test the append method
