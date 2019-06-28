@@ -4,3 +4,6 @@
 
 // assign to global variable
 sparkle = require('./main.js');
+
+// assign private classes
+sparkle.Template = require('./lib/Template.js');
