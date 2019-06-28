@@ -109,6 +109,28 @@ describe('Form', () => {
             // expect the input to be filled in
             expect(input.value).to.be.equal('a');
         });
+
+        it('should update the form from object with defined getter', () => {
+
+            // prepare test form
+            let form = document.createElement('FORM');
+            let input = document.createElement('INPUT');
+            input.setAttribute('name', 'foo');
+            form.appendChild(input);
+
+            // prepare an object with defined getter
+            let obj = { };
+            Object.defineProperty(obj, 'foo', { get () { return 'baz'; } });
+
+            // create a component form
+            let comp = new sparkle.Form({ elem: form });
+
+            // fill the component form with data
+            comp.fill(obj);
+
+            // expect the input to be filled in
+            expect(input.value).to.be.equal('baz');
+        });
     });
 
     describe('.assign()', () => {
