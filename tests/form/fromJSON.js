@@ -23,4 +23,21 @@ describe('form.toJSON()', () => {
         // check if the value is there
         expect(input.value).to.equal('baz');
     });
+
+    // the function to handle NULL correctly
+    it('should fill NULL as empty space', () => {
+
+        // create a form element
+        let form = document.createElement('FORM');
+        let input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'foo');
+        form.appendChild(input);
+
+        // fill in the form
+        sparkle.form.fromJSON(form, { foo: null });
+
+        // check if the value is there
+        expect(input.value).to.equal('');
+    });
 });
