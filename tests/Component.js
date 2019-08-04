@@ -7,40 +7,40 @@
 // announce that we are testing Component class
 describe('Component', () => {
 
-    describe('.compose()', () => {
+    // check the elem
+    describe('.elem', () => {
 
-        const Base = class extends sparkle.Component {
+        it('should expose an element that the component is contained to', () => {
 
-            constructor(options) {
+            // make a component
+            let a = new sparkle.Component();
 
-                super(options);
-
-                this.test = options.test;
-            }
-        };
-
-        it('should return a new class with locked settings object', () => {
-
-            // compose new class
-            let A = Base.compose({ test: 'a' });
-
-            // make an instance
-            let a = new A();
-
-            // check if really locked
-            expect(a.test).to.be.equal('a');
+            // it should be an element
+            expect(a.elem).to.be.instanceof(Element);
         });
 
-        it('should return a new class with locked settings function', () => {
+        it('should expose same element as one specified in the constructor', () => {
 
-            // compose new class
-            let A = Base.compose(() => { return { test: 'a' }; });
+            // make a component
+            let a = new sparkle.Component({ elem: document.createElement('SPAN') });
+            let b = new sparkle.Component({ elem: document.createElement('SECTION') });
 
-            // make an instance
-            let a = new A();
+            // check the elements
+            expect(a.elem.tagName).to.be.equal('SPAN');
+            expect(b.elem.tagName).to.be.equal('SECTION');
+        });
+    });
 
-            // check if really locked
-            expect(a.test).to.be.equal('a');
+    // check the content element
+    describe('.content', () => {
+
+        it('should expose a component content element', () => {
+
+            // make a component
+            let a = new sparkle.Component();
+
+            // it should be an element
+            expect(a.content).to.be.instanceof(Element);
         });
     });
 

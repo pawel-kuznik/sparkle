@@ -11,5 +11,6 @@ module.exports = {
     Form:       require('./lib/Form.js'),
     List:       require('./lib/List.js'),
     form:       require('./lib/form.js'),
-    object:     require('./lib/object.js')
+    object:     require('./lib/object.js'),
+    DOM:        { createElement: require('./lib/DOM/createElement.js') }
 };
