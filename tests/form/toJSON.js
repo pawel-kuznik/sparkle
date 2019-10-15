@@ -64,18 +64,22 @@ describe('form.toJSON()', () => {
         let checkbox = document.createElement('INPUT');
         checkbox.setAttribute('type', 'checkbox');
         checkbox.setAttribute('name', 'test');
+        checkbox.checked = false;
 
         // append the checkbox to the form
         form.append(checkbox);
 
         // get the data
-        const data = sparkle.form.toJSON(form);
+        let data = sparkle.form.toJSON(form);
 
         // expect false value from a lone checkbox
         expect(data).to.have.property('test').that.equals(false);
 
         // set the checkbox to checked state
         checkbox.checked = true;
+
+        // get the data again
+        data = sparkle.form.toJSON(form);
 
         // expect true value from a lone checkbox
         expect(data).to.have.property('test').that.equals(true);
