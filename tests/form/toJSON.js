@@ -17,6 +17,25 @@ describe('form.toJSON()', () => {
         expect(sparkle.form.toJSON(form)).to.be.an('object');
     });
 
+    it('should handle textareas', () => {
+
+        // create a form element
+        let form = document.createElement('FORM');
+
+        // create an input
+        let input = document.createElement('TEXTAREA');
+        input.setAttribute('name', 'test');
+        input.value = 'foo';
+
+        form.append(input);
+
+        // get the data
+        const data = sparkle.form.toJSON(form);
+
+        // expect the data to be an empty object
+        expect(data).to.have.property('test').that.equal('foo');
+    });
+
     it('should only parse inputs with name', () => {
 
         // create a form element
