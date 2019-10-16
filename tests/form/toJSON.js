@@ -36,6 +36,27 @@ describe('form.toJSON()', () => {
         expect(data).to.be.deep.equal({ });
     });
 
+    it('should skip disabled inputs', () => {
+
+        // create a form element
+        let form = document.createElement('FORM');
+
+        // create an input
+        let input = document.createElement('INPUT');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'test1')
+        input.value = 'foo';
+        input.disabled = true;
+
+        form.append(input);
+
+        // get the data
+        const data = sparkle.form.toJSON(form);
+
+        // expect the data to be an empty object
+        expect(data).to.be.deep.equal({ });
+    });
+
     it('should handle text inputs', () => {
 
         // create a form element
@@ -122,6 +143,25 @@ describe('form.toJSON()', () => {
 
         // make sure we have only baz1 and baz2 in output data
         expect(data).to.have.property('foo').that.deep.equal(['baz1', 'baz2']);
+    });
+
+    it('should assign NULL when no radioboxes checked', () => {
+
+        // create form element
+        const form = document.createElement('FORM');
+
+        let radio1 = document.createElement('INPUT');
+        radio1.setAttribute('type', 'radio');
+        radio1.setAttribute('name', 'test');
+        radio1.value = 'foo1';
+
+        form.append(radio1);
+
+        // get the data
+        const data = sparkle.form.toJSON(form);
+
+        // make sure we have proper value
+        expect(data).to.have.property('test').that.equal(null);
     });
 
     it('should handle multiple radioboxe', () => {
