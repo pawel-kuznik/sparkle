@@ -216,4 +216,31 @@ describe('form.toJSON()', () => {
         // make sure we have proper value
         expect(data).to.have.property('test').that.equal('foo2');
     });
+
+    it('should handle select elements', () => {
+    
+        // create form element
+        const form = document.createElement('FORM');
+
+        let select = document.createElement('SELECT');
+        select.setAttribute('name', 'test');
+
+        form.append(select);
+
+        let option1 = document.createElement('OPTION');
+        option1.value = 'test1';
+
+        select.append(option1);
+
+        let option2 = document.createElement('OPTION');
+        option2.value = 'test2';
+
+        select.append(option2);
+
+        // get the data
+        const data = sparkle.form.toJSON(form);
+
+        // make sure we have proper value
+        expect(data).to.have.property('test').that.equal('test1');
+    });
 });
