@@ -123,4 +123,38 @@ describe('form.toJSON()', () => {
         // make sure we have only baz1 and baz2 in output data
         expect(data).to.have.property('foo').that.deep.equal(['baz1', 'baz2']);
     });
+
+    it('should handle multiple radioboxe', () => {
+    
+        // create form element
+        const form = document.createElement('FORM');
+
+        let radio1 = document.createElement('INPUT');
+        radio1.setAttribute('type', 'radio');
+        radio1.setAttribute('name', 'test');
+        radio1.value = 'foo1';
+
+        form.append(radio1);
+
+        let radio2 = document.createElement('INPUT');
+        radio2.setAttribute('type', 'radio');
+        radio2.setAttribute('name', 'test');
+        radio2.value = 'foo2';
+        radio2.checked = true;
+
+        form.append(radio2);
+
+        let radio3 = document.createElement('INPUT');
+        radio3.setAttribute('type', 'radio');
+        radio3.setAttribute('name', 'test');
+        radio3.value = 'foo3';
+
+        form.append(radio3);
+
+        // get the data
+        const data = sparkle.form.toJSON(form);
+
+        // make sure we have proper value
+        expect(data).to.have.property('test').that.equal('foo2');
+    });
 });
