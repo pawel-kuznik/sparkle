@@ -11,7 +11,7 @@ describe('Template', () => {
 
         it('should reject the promise', done => {
 
-            // start the template fetch 
+            // start the template fetch
             const template = new sparkle.Template('/dummy.html');
 
             // abort template
@@ -29,7 +29,7 @@ describe('Template', () => {
             // create an element
             const div = document.createElement('DIV');
 
-            // start the template fetch 
+            // start the template fetch
             const template = new sparkle.Template('/dummy.html');
 
             // append the thing to the element
@@ -48,7 +48,7 @@ describe('Template', () => {
             // create an element
             const div = document.createElement('DIV');
 
-            // start the template fetch 
+            // start the template fetch
             const template = new sparkle.Template('/dummy.html');
 
             // append the thing to the element

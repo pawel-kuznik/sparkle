@@ -31,45 +31,50 @@
  */
 
 // get the dependencies
-const EventHandlers = require('./EventHandlers.js');
-const Template = require('./Template.js');
+import { Emitter } from "iventy";
+import { Template } from "./Template";
 
 // the privates
-const elem = Symbol('elem');
 const template = Symbol('template');
 const adopted = Symbol('adopted');
 const adoptedRemovedHandler = Symbol('adoptedRemovedHandler');
 
 // export the class
-const Component = class extends EventHandlers.Emitter {
+export class Component extends Emitter {
+
+    /**
+     *  An HTML or SVG element. Depending in which document context the component
+     *  was created.
+     */
+    private readonly _elem:HTMLElement|SVGElement;
+
+    /**
+     *  A possible template the component needs.
+     */
+    private readonly _template:Template|null;
+
+    /**
+     *  A set of adopted components by this one.
+     */
+    private readonly _adopted:Set<Component> = new Set();
 
     /**
      *  The constructor.
      *
      *  @param  object  @see the file-level docblock
      */
-    constructor(inits = { }) {
+    constructor(inits:object = { }) {
+
+        // ensure defaults
+        inits = Object.assign({ }, {
+            elem: document.createElement('DIV')
+        }, inits);
 
         // construct the base class
         super();
 
-        /**
-         *  The element housing the component in the DOM tree.
-         *  @var    HTMLElement
-         */
-        this[elem] = inits.elem || document.createElement('DIV');
-
-        /**
-         *  Possible template of this component.
-         *  @var    Template
-         */
-        this[template] = null;
-
-        /**
-         *  A set of adopted components.
-         *  @var    Set
-         */
-        this[adopted] = new Set();
+        // assign the element
+        this._elem = inits.elem;
 
         /**
          *  A handler to react on when an adopted component is removed.
@@ -82,21 +87,20 @@ const Component = class extends EventHandlers.Emitter {
         };
 
         // should we load a template into our component?
-        if(inits.template) {
-            
+        if (inits.template) {
+
             // construct a template
-            this[template] = new Template(inits.template);
+            this._template = new Template(inits.template);
 
             // tell the template to arrive to our element
-            this[template].arrivesTo(this.elem);
+            this._template.arrivesTo(this.elem);
         }
     }
 
     /**
      *  Get access to the component's elements.
-     *  @return DOMElement
      */
-    get elem () { return this[elem]; }
+    get elem () : HTMLElement|SVGElement { return this._elem; }
 
     /**
      *  Get access to the component's content element. This is an element that
@@ -104,7 +108,7 @@ const Component = class extends EventHandlers.Emitter {
      *  element as the `.elem`, but derived components might change it.
      *  @return DOMElement
      */
-    get content() { return this.elem; }
+    get content() : HTMLElement|SVGElement|null { return this._elem; }
 
     /**
      *  A component is a thenable object. This promise resolves when
@@ -112,13 +116,13 @@ const Component = class extends EventHandlers.Emitter {
      *  if can be initialized the promise is rejected.
      *  @return Promise
      */
-    then(successCallback, failureCallback) {
+    then(successCallback:() => void, failureCallback:() => void) : Promise<void> {
 
         // if we do have the template promise we would like to return a new one
-        if (this[template]) return this[template].then(successCallback, failureCallback);
+        if (this._template) return this._template.then(successCallback, failureCallback);
 
         // create a resolved promise, cause we never neded to load a template
-        let promise = new Promise((resolve, reject) => { resolve(); });
+        let promise:Promise<void> = new Promise((resolve, reject) => { resolve(); });
 
         // return the resolved promise
         return promise.then(successCallback, failureCallback);
@@ -130,10 +134,10 @@ const Component = class extends EventHandlers.Emitter {
      *  @param  Component   The component to adopt.
      *  @return Component   The adopted component.
      */
-    adopt(component) {
+    adopt(component:Component) : Component {
 
         // add the component to the adopted ones
-        this[adopted].add(component);
+        this._adopted.add(component);
 
         // install a removed handler
         component.on('removed', this[adoptedRemovedHandler]);
@@ -148,14 +152,14 @@ const Component = class extends EventHandlers.Emitter {
      *  @param  Component   The component to release.
      *  @return Component   The released component.
      */
-    release(component) {
+    release(component:Component) : Component {
 
         // install a removed handler
         component.off('removed', this[adoptedRemovedHandler]);
 
         // release the component
-        this[adopted].delete(component);
-    
+        this._adopted.delete(component);
+
         // return the component
         return component;
     }
@@ -165,13 +169,13 @@ const Component = class extends EventHandlers.Emitter {
      *  @param  Component|Element
      *  @return Component
      */
-    append(child) {
+    append(child:HTMLElement|SVGElement|Component) : Component {
 
         // if we are dealing with a component we want to append the component element to our
-        if (child instanceof Component) this.content.appendChild(child.elem);
+        if (child instanceof Component) this.content?.appendChild(child.elem);
 
         // if we are dealing with an element we want to append the element like that
-        if (child instanceof Element) this.content.appendChild(child);
+        if (child instanceof Element || child instanceof SVGElement) this.content.appendChild(child);
 
         // allow chaining
         return this;
@@ -182,13 +186,13 @@ const Component = class extends EventHandlers.Emitter {
      *  @param  Component|Element
      *  @return Component
      */
-    appendTo(target) {
+    appendTo(target:HTMLElement|SVGElement|Component) : Component {
 
         // if we are dealing with a component we want to append our element to the component element
-        if (target instanceof Component) target.content.appendChild(this.elem);
+        if (target instanceof Component) target.content?.appendChild(this.elem);
 
         // if we are dealing with an element, we just want to append our element to it
-        if (target instanceof Element) target.appendChild(this.elem);
+        if (target instanceof HTMLElement || target instanceof SVGElement) target.appendChild(this.elem);
 
         // allow chaining
         return this;
@@ -200,7 +204,7 @@ const Component = class extends EventHandlers.Emitter {
     remove() {
 
         // remove all of the adopted components
-        for (let component of this[adopted]) {
+        for (let component of this._adopted) {
 
             // remove the component
             component.remove();
@@ -210,22 +214,19 @@ const Component = class extends EventHandlers.Emitter {
         }
 
         // was the component already removed? then do nothing
-        if (!this[elem]) return;
+        if (!this._elem) return;
 
         // if we have a template promise we should abort it at this time
-        if (this[template]) this[template].abort();
+        if (this._template) this._template.abort();
 
         // remove the element
-        this[elem].remove();
-        this[elem] = null;
+        this._elem.remove();
+        this._elem = null;
 
         // trigger the removed event
-        this.triggerer.triggerEvent('removed');
+        this.trigger('removed');
 
         // remove all event handlers. At this point they are meaningless
         this.off();
     }
 };
-
-// export the class
-module.exports = Component;

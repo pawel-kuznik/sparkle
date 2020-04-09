@@ -5,12 +5,13 @@
  */
 
 // this is the public interface of the library
-module.exports = {
-    Component:  require('./lib/Component.js'),
-    Container:  require('./lib/Container.js'),
-    Form:       require('./lib/Form.js'),
-    List:       require('./lib/List.js'),
-    form:       require('./lib/form.js'),
-    object:     require('./lib/object.js'),
-    DOM:        { createElement: require('./lib/DOM/createElement.js') }
+window.sparkle = {
+    Template:   require('./build/lib/Template.js').Template,
+    Component:  require('./build/Component.js').Component,
+    // Container:  require('./build/Container.js'),
+    // Form:       require('./build/Form.js'),
+    // List:       require('./build/List.js'),
+    // form:       require('./build/form.js'),
+    // object:     require('./build/object.js'),
+    // DOM:        { createElement: require('./build/DOM/createElement.js') }
 };

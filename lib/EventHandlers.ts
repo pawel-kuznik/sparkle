@@ -1,43 +1,37 @@
 /**
  *  This is a thin wrapper around Iventy.Emitter class that allows to be used a
  *  internal instance for the event handlers/emitters for a component.
- *  
+ *
  *  @author     Pawel Kuznik <pawel.kuznik@gmail.com>
  */
 
 // get the dependency
-const BaseEmitter = require('iventy').Emitter;
-const Event = require('iventy').Event;
+import { Emitter as BaseEmitter, Event } from "iventy";
 
-// the private symbols
-const emitter = Symbol('emitter');
+const emitters:WeakMap<Emitter, BaseEmitter> = new WeakMap();
 
 /**
  *  This is a class that exposes the emitting part of the event interface.This is
  *  meant to be used as a base class or in public interface.
  */
-const Emitter = class {
+export class Emitter {
 
     /**
-     *  The constructor.
+     *  The actual event emitter.
      */
-    constructor() {
-    
-        /**
-         *  The actual event system emitter.
-         *  @var    Iventy.Emitter
-         */
-        this[emitter] = new BaseEmitter();
-    }
+    private readonly _emitter:BaseEmitter = new BaseEmitter();
 
     /**
      *  Install a new event handler.
      *  @param  variadic    Look into Iventy.Emitter.on() for mode info.
      */
-    on(...args) {
+    on(name:string, callback:() => void) : Emitter {
 
         // the same signature, so we can pass the arguments just like that
-        this[emitter].on(...args);
+        this._emitter.on(name, callback);
+
+        // set the emitter
+        emitters.set(this, this._emitter);
 
         // allow chaining
         return this;
@@ -47,10 +41,10 @@ const Emitter = class {
      *  Uninstall an event handler.
      *  @param  variadic    Look into Iventy.Emitter.on() for mode info.
      */
-    off(...args) {
+    off(name:string, callback:() => void) : Emitter {
 
         // the same signature, so we can pass the arguments just like that
-        this[emitter].off(...args);
+        this._emitter.off(name, callback);
 
         // allow chaining
         return this;
@@ -60,10 +54,15 @@ const Emitter = class {
      *  Bubble events to a new target.
      *  @param  variadic    Look into Iventy.Emitter.on() for mode info.
      */
-    bubbleTo(...args) {
+    bubbleTo(target:Emitter) : Emitter {
 
-        // the same signature, so we can pass the arguments just like that
-        this[emitter].bubbleTo(...args);
+        // try to get the target base emitter
+        const targetEmitter:BaseEmitter | null = emitters.get(target);
+
+        // no target emitter? then skip it
+        if (!targetEmitter) return;
+
+        this._emitter.bubbleTo(target[emitter]);
 
         // allow chaining
         return this;
@@ -73,7 +72,7 @@ const Emitter = class {
      *  Get access to the events triggerer.
      *  @return Triggerer
      */
-    get triggerer() {
+    get triggerer() : Triggerer {
 
         // return new triggerer
         return new Triggerer(this);
@@ -85,41 +84,31 @@ const Emitter = class {
  *  class works in pair with the EventEmitter and it need to be instantiated with
  *  that emitter insteance.
  */
-const Triggerer = class {
+export class Triggerer {
+
+    /**
+     *  The actual event emitter.
+     */
+    private readonly _emitter:BaseEmitter;
 
     /**
      *  The constructor.
      *
      *  @param  EventEmitter
      */
-    constructor(parentEmitter) {
+    constructor(parentEmitter:BaseEmitter) {
 
-        /**
-         *  The emitter instance.
-         *  @var    Emitter
-         */
-        this[emitter] = parentEmitter;
+        // get the event emitter from the parent
+        this._emitter = parentEmitter[emitter];
     }
-    
+
     /**
      *  Trigger an event.
      */
-    trigger(...args) {
-        
-        // trigger an event
-        this[emitter][emitter].trigger(...args);
+    trigger(...args) : Triggerer {
 
-        // allow chaining
-        return this;
-    }
-
-    /**
-     *  A shorthand for this.trigger(this.createEvent))
-     */
-    triggerEvent(...args) {
-    
-        // trigger the event
-        this.trigger(this.createEvent(...args));
+        // call the emitter
+        this._emitter.trigger(...args);
 
         // allow chaining
         return this;
@@ -128,16 +117,11 @@ const Triggerer = class {
     /**
      *  Create a new event instance.
      */
+     /*
     createEvent(name, data = { }, previousEvent = null) {
 
         // create a new event
         return new Event(name, data, this[emitter], previousEvent);
     }
+    */
 };
-
-// expose the classes
-module.exports = {
-    Emitter:    Emitter,
-    Triggerer:  Triggerer
-};
-
