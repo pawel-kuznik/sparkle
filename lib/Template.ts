@@ -56,7 +56,7 @@ export class Template {
      *  @return Promise         A promise resolved when the template copy is in the
      *                          target element.
      */
-    arrivesTo(target:HTMLElement) : Promise<void> {
+    arrivesTo(target:HTMLElement|SVGElement) : Promise<void> {
 
         // await the promise and add the HTML to the target
         return this._promise.then(html => {

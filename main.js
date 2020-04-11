@@ -7,7 +7,7 @@
 // this is the public interface of the library
 window.sparkle = {
     Template:   require('./build/lib/Template.js').Template,
-    Component:  require('./build/Component.js').Component,
+    Component:  require('./build/lib/Component.js').Component,
     // Container:  require('./build/Container.js'),
     // Form:       require('./build/Form.js'),
     // List:       require('./build/List.js'),

@@ -46,7 +46,7 @@ export class Component extends Emitter {
      *  An HTML or SVG element. Depending in which document context the component
      *  was created.
      */
-    private readonly _elem:HTMLElement|SVGElement;
+    private _elem:HTMLElement|SVGElement;
 
     /**
      *  A possible template the component needs.
@@ -59,32 +59,29 @@ export class Component extends Emitter {
     private readonly _adopted:Set<Component> = new Set();
 
     /**
+     *  A special handler for the remove event of the adopted components.
+     */
+    private readonly _adoptedRemoveHandler = (event:any) => {
+
+        // release the event target (the adopted component)
+        if (event.target) this.release(event.target);
+    };
+
+    /**
      *  The constructor.
      *
      *  @param  object  @see the file-level docblock
      */
-    constructor(inits:object = { }) {
-
-        // ensure defaults
-        inits = Object.assign({ }, {
-            elem: document.createElement('DIV')
-        }, inits);
+    constructor(inits:{
+        elem?:HTMLElement|SVGElement,
+        template?:string
+    } = { }) {
 
         // construct the base class
         super();
 
         // assign the element
-        this._elem = inits.elem;
-
-        /**
-         *  A handler to react on when an adopted component is removed.
-         *  @var    function
-         */
-        this[adoptedRemovedHandler] = event => {
-
-            // release the event target (the adopted component)
-            this.release(event.target);
-        };
+        this._elem = inits.elem || document.createElement('DIV');
 
         // should we load a template into our component?
         if (inits.template) {
@@ -95,6 +92,9 @@ export class Component extends Emitter {
             // tell the template to arrive to our element
             this._template.arrivesTo(this.elem);
         }
+
+        // we don't have a template, so the component is immediately ready
+        else this._template = null;
     }
 
     /**
@@ -140,7 +140,7 @@ export class Component extends Emitter {
         this._adopted.add(component);
 
         // install a removed handler
-        component.on('removed', this[adoptedRemovedHandler]);
+        component.on('removed', this._adoptedRemoveHandler);
 
         // return the same component
         return component;
@@ -155,7 +155,7 @@ export class Component extends Emitter {
     release(component:Component) : Component {
 
         // install a removed handler
-        component.off('removed', this[adoptedRemovedHandler]);
+        component.off('removed', this._adoptedRemoveHandler);
 
         // release the component
         this._adopted.delete(component);
@@ -175,7 +175,7 @@ export class Component extends Emitter {
         if (child instanceof Component) this.content?.appendChild(child.elem);
 
         // if we are dealing with an element we want to append the element like that
-        if (child instanceof Element || child instanceof SVGElement) this.content.appendChild(child);
+        if (child instanceof Element || child instanceof SVGElement) this.content?.appendChild(child);
 
         // allow chaining
         return this;
@@ -221,12 +221,8 @@ export class Component extends Emitter {
 
         // remove the element
         this._elem.remove();
-        this._elem = null;
 
         // trigger the removed event
         this.trigger('removed');
-
-        // remove all event handlers. At this point they are meaningless
-        this.off();
     }
 };
