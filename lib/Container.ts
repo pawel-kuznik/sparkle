@@ -57,7 +57,7 @@ export class Container extends Component {
     /**
      *  Install a new widget inside the container.
      */
-    install(Widget: typeof Component, ...args:Array<any>) : Component {
+    install(Widget: new (...a: any[]) => Component, ...args:Array<any>) : Component {
 
         // is there something installed?
         if (this._current) this._current.remove();
