@@ -22,11 +22,6 @@
  *
  *                      (Default: null)
  *
- *  This Component class can emmit following events:
- *
- *  @event  removed     This event emmits when the component was removed
- *                      and should not be used further.
- *
  *  @author     Paweł Kuźnik <pawel.kuznik@gmail.com>
  */
 
@@ -57,15 +52,6 @@ export class Component extends Emitter {
      *  A set of adopted components by this one.
      */
     private readonly _adopted:Set<Component> = new Set();
-
-    /**
-     *  A special handler for the remove event of the adopted components.
-     */
-    private readonly _adoptedRemoveHandler = (event:any) => {
-
-        // release the event target (the adopted component)
-        if (event.target) this.release(event.target);
-    };
 
     /**
      *  The constructor.
@@ -139,9 +125,6 @@ export class Component extends Emitter {
         // add the component to the adopted ones
         this._adopted.add(component);
 
-        // install a removed handler
-        component.on('removed', this._adoptedRemoveHandler);
-
         // return the same component
         return component;
     }
@@ -153,9 +136,6 @@ export class Component extends Emitter {
      *  @return Component   The released component.
      */
     release(component:Component) : Component {
-
-        // install a removed handler
-        component.off('removed', this._adoptedRemoveHandler);
 
         // release the component
         this._adopted.delete(component);
@@ -199,30 +179,34 @@ export class Component extends Emitter {
     }
 
     /**
-     *  Remove the component.
+     *  This method should be called when the component is meant to be
+     *  destroyed/destructed and it's meant to release any long runnig resources.
+     *  This method will also make sure that it destroys any adopted components.
+     *
+     *  It's not expected that after this method is called the instance will be
+     *  still used.
      */
-    remove() {
+    destroy() : void {
 
         // remove all of the adopted components
-        for (let component of this._adopted) {
+        for (let component of this._adopted) component.destroy();
 
-            // remove the component
-            component.remove();
-
-            // forget about the component
-            this.release(component);
-        }
-
-        // was the component already removed? then do nothing
-        if (!this._elem) return;
+        // clear the set of adopted components
+        this._adopted.clear();
 
         // if we have a template promise we should abort it at this time
         if (this._template) this._template.abort();
+    }
+
+    /**
+     *  Remove the component from DOM. Optionally, also destroy it.
+     */
+    remove(destroy:boolean = false) {
+
+        // should we also destroy the component?
+        if (destroy) this.destroy();
 
         // remove the element
         this._elem.remove();
-
-        // trigger the removed event
-        this.trigger('removed');
     }
 };

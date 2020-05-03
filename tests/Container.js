@@ -36,4 +36,25 @@ describe('Container', () => {
             expect(c.current).to.be.instanceOf(A);
         });
     });
+
+    describe('.remove()', () => {
+
+        it('should remove the installed component', () => {
+
+            // make a container
+            const c = new sparkle.Container();
+
+            // make a derived class
+            const A = class extends sparkle.Container { };
+
+            // install a component
+            c.install(A);
+
+            // remove the container
+            c.remove(true);
+
+            // expect the current to be null
+            expect(c.current).to.be.equal(null);
+        });
+    });
 });

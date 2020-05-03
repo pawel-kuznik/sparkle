@@ -2,14 +2,6 @@
  *  This is a container class that that enables mounting various components
  *  inside it.
  *
- *  This component triggers following events:
- *
- *  @event      installed   This event triggers when a new component is installed
- *                          inside the container.
- *
- *  @event      cleared     This event triggers when component was clear from
- *                          a current instance.
- *
  *  The Container class can be initalized with following options:
  *
  *      elem:DOMElement The element that should be used as the containers's
@@ -60,22 +52,11 @@ export class Container extends Component {
     install(Widget: new (...a: any[]) => Component, ...args:Array<any>) : Component {
 
         // is there something installed?
-        if (this._current) this._current.remove();
+        if (this._current) this._current.remove(true);
 
         // construct new widget
         this._current = this.adopt(new Widget(...args));
         this.elem.appendChild(this._current.elem);
-
-        // trigger cleared event
-        this.trigger('added');
-
-        // install an onremoved handler to clear the container when
-        // the current component is removed
-        this._current.on('removed', () => {
-
-            // clear the container
-            this.clear();
-        });
 
         // allow chaining
         return this._current;
@@ -89,16 +70,28 @@ export class Container extends Component {
         // no current? we can leap out
         if (!this._current) return this;
 
-        // do we have a current component installed?
-        this.release(this._current).remove();
+        // remvoe the currently installed component.
+        this._current.remove(true);
 
         // reset the variable
         this._current = null;
 
-        // trigger cleared event
-        this.trigger('cleared');
-
         // allow chaining
         return this;
+    }
+
+    /**
+     *  Destroy the container.
+     */
+    destroy() : void {
+
+        // do we have a current component?
+        if (this._current) this._current.destroy();
+
+        // release null
+        this._current = null;
+
+        // call the super destroy
+        super.destroy();
     }
 };
