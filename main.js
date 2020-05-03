@@ -8,7 +8,7 @@
 window.sparkle = {
     Template:   require('./build/lib/Template.js').Template,
     Component:  require('./build/lib/Component.js').Component,
-    // Container:  require('./build/Container.js'),
+    Container:  require('./build/lib/Container.js').Container,
     // Form:       require('./build/Form.js'),
     // List:       require('./build/List.js'),
     // form:       require('./build/form.js'),

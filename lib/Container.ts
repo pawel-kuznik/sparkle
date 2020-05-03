@@ -23,86 +23,80 @@
  */
 
 // the depencies
-const Component = require('./Component.js');
-
-// the privates
-const current = Symbol('current');
+import { Component } from "./Component";
 
 // export the class
-module.exports = class extends Component {
+export class Container extends Component {
+
+    /**
+     *  The current component in the container.
+     */
+    private _current:Component|null = null;
 
     /**
      *  The constructor
      *
      *  @param  see file-level doc block
      */
-    constructor(params = { }) {
+    constructor(params:{
+        elem?:HTMLElement|SVGElement,
+    } = { }) {
 
         // construct the parent class and pass some of the parameters to the parent class
         super({
             elem:   params.elem
         });
-
-        /**
-         *  The currently installed component.
-         *  @var    Component
-         */
-        this[current] = null;
     }
 
     /**
      *  Get the currently installed component.
      *  @return Component
      */
-    get current() {
-
-        // return the the currently installed component
-        return this[current];
-    }
+    get current() : Component|null { return this._current; }
 
     /**
      *  Install a new widget inside the container.
      */
-    install(Widget, ...args) {
+    install(Widget: typeof Component, ...args:Array<any>) : Component {
 
         // is there something installed?
-        if (this[current]) this[current].remove();
+        if (this._current) this._current.remove();
 
         // construct new widget
-        this[current] = this.adopt(new Widget(...args));
-        this.elem.appendChild(this[current].elem);
+        this._current = this.adopt(new Widget(...args));
+        this.elem.appendChild(this._current.elem);
 
         // trigger cleared event
-        this.triggerer.triggerEvent('added');
+        this.trigger('added');
 
         // install an onremoved handler to clear the container when
         // the current component is removed
-        this[current].on('removed', () => {
+        this._current.on('removed', () => {
 
             // clear the container
             this.clear();
         });
 
         // allow chaining
-        return this[current];
+        return this._current;
     }
 
     /**
      *  Remove the currently installed component.
      */
-    clear() {
+    clear() : Container {
 
-        // no current? we can leap out 
-        if (!this[current]) return this;
+        // no current? we can leap out
+        if (!this._current) return this;
 
         // do we have a current component installed?
-        this.release(this[current]).remove();
+        this.release(this._current).remove();
 
         // reset the variable
-        this[current] = null;
+        this._current = null;
 
         // trigger cleared event
-        this.triggerer.triggerEvent('cleared');
+        this.trigger('cleared');
 
         // allow chaining
         return this;
