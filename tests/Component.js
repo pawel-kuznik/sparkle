@@ -77,6 +77,22 @@ describe('Component', () => {
 
     });
 
+    // we want to test the emplace method
+    describe('.emplace()', () => {
+
+        it('should create component that is already inside the existing one', () => {
+
+            // construct component
+            let a = new sparkle.Component();
+
+            // construct b
+            let b = a.emplace(sparkle.Component);
+
+            // b element should be under a elem
+            expect(b.elem.parentElement).to.be.equal(a.elem);
+        });
+    });
+
     // we weant to test the appendTo method
     describe('.appendTo()', () => {
 

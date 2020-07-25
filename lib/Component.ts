@@ -34,14 +34,22 @@ const template = Symbol('template');
 const adopted = Symbol('adopted');
 const adoptedRemovedHandler = Symbol('adoptedRemovedHandler');
 
+/**
+ *  The interface telling how the init object of the compoennt should look like.
+ */
+export interface ComponentInit {
+    elem?:HTMLElement|SVGElement,
+    template?:string
+};
+
 // export the class
-export class Component extends Emitter {
+export class Component<OuterElement extends SVGElement | HTMLElement = HTMLElement, InnerElement extends SVGElement | HTMLElement = HTMLElement> extends Emitter {
 
     /**
      *  An HTML or SVG element. Depending in which document context the component
      *  was created.
      */
-    private _elem:HTMLElement|SVGElement;
+    private _elem:OuterElement;
 
     /**
      *  A possible template the component needs.
@@ -58,16 +66,13 @@ export class Component extends Emitter {
      *
      *  @param  object  @see the file-level docblock
      */
-    constructor(inits:{
-        elem?:HTMLElement|SVGElement,
-        template?:string
-    } = { }) {
+    constructor(inits:ComponentInit = { }) {
 
         // construct the base class
         super();
 
         // assign the element
-        this._elem = inits.elem || document.createElement('DIV');
+        this._elem = inits.elem as OuterElement || document.createElement('DIV');
 
         // should we load a template into our component?
         if (inits.template) {
@@ -86,7 +91,7 @@ export class Component extends Emitter {
     /**
      *  Get access to the component's elements.
      */
-    get elem () : HTMLElement|SVGElement { return this._elem; }
+    get elem () : OuterElement { return this._elem; }
 
     /**
      *  Get access to the component's content element. This is an element that
@@ -94,7 +99,7 @@ export class Component extends Emitter {
      *  element as the `.elem`, but derived components might change it.
      *  @return DOMElement
      */
-    get content() : HTMLElement|SVGElement|null { return this._elem; }
+    get content() : InnerElement { return this._elem as unknown as InnerElement; }
 
     /**
      *  A component is a thenable object. This promise resolves when
@@ -108,7 +113,7 @@ export class Component extends Emitter {
         if (this._template) return this._template.then(successCallback, failureCallback);
 
         // create a resolved promise, cause we never neded to load a template
-        let promise:Promise<void> = new Promise((resolve, reject) => { resolve(); });
+        let promise:Promise<void> = new Promise((resolve) => { resolve(); });
 
         // return the resolved promise
         return promise.then(successCallback, failureCallback);
@@ -145,17 +150,37 @@ export class Component extends Emitter {
     }
 
     /**
+     *  Create a specific widgets inside the this component.
+     *  @param Component 
+     */
+    emplace(Widget: new (...a: any[]) => Component, ...args:Array<any>) : Component {
+
+        // construct the widget
+        const widget = new Widget(...args);
+
+        // adopt the widget cause we want to make sure that we also destroy it
+        // when we are called to be destroyed
+        this.adopt(widget);
+
+        // make sure that the widget is appended to the DOM of the this component.
+        this.append(widget);
+
+        // return constructed widget
+        return widget;
+    }
+
+    /**
      *  Append a component or an element to this component.
      *  @param  Component|Element
      *  @return Component
      */
-    append(child:HTMLElement|SVGElement|Component) : Component {
+    append(child:HTMLElement|SVGElement|Component) : this {
 
         // if we are dealing with a component we want to append the component element to our
         if (child instanceof Component) this.content?.appendChild(child.elem);
 
         // if we are dealing with an element we want to append the element like that
-        if (child instanceof Element || child instanceof SVGElement) this.content?.appendChild(child);
+        if (child instanceof HTMLElement || child instanceof SVGElement) this.content?.appendChild(child);
 
         // allow chaining
         return this;
@@ -166,7 +191,7 @@ export class Component extends Emitter {
      *  @param  Component|Element
      *  @return Component
      */
-    appendTo(target:HTMLElement|SVGElement|Component) : Component {
+    appendTo(target:HTMLElement|SVGElement|Component) : this {
 
         // if we are dealing with a component we want to append our element to the component element
         if (target instanceof Component) target.content?.appendChild(this.elem);
