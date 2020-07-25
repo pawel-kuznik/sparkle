@@ -155,7 +155,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
      *  @param Component    The component to install inside this one.
      *  @variadic           The parameters for the component.
      */
-    emplace<C extends Component<InnerElement, HTMLElement|SVGElement> = Component<InnerElement>>(Widget: new (...a: any[]) => C, ...args:Array<any>) : C {
+    emplace<C extends Component<InnerElement,HTMLElement|SVGElement>>(Widget: new (...a: any[]) => C, ...args:Array<any>) : C {
 
         // construct the widget
         const widget = new Widget(...args);
