@@ -150,8 +150,10 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
     }
 
     /**
-     *  Create a specific widgets inside the this component.
-     *  @param Component 
+     *  Create a specific widgets inside the this component. This method automatically
+     *  appends the instance of the component and adopts it.
+     *  @param Component    The component to install inside this one.
+     *  @variadic           The parameters for the component.
      */
     emplace(Widget: new (...a: any[]) => Component, ...args:Array<any>) : Component {
 
