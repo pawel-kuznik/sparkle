@@ -7,4 +7,5 @@
 export { Template } from "./lib/Template";
 export { Component } from "./lib/Component";
 export { Container } from "./lib/Container";
+export { DOM } from "./lib/DOM/createElement";
 // export { Emitter, Triggerer } from "./lib/EventHandlers";

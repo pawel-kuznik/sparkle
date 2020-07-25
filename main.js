@@ -13,5 +13,5 @@ window.sparkle = {
     // List:       require('./build/List.js'),
     // form:       require('./build/form.js'),
     // object:     require('./build/object.js'),
-    // DOM:        { createElement: require('./build/DOM/createElement.js') }
+    DOM:        { createElement: require('./build/lib/DOM/createElement.js').DOM.createElement }
 };
