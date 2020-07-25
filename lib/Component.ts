@@ -140,7 +140,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
      *  @param  Component   The component to release.
      *  @return Component   The released component.
      */
-    release(component:Component) : Component {
+    release(component:Component<InnerElement,HTMLElement|SVGElement>) : Component<InnerElement,HTMLElement|SVGElement> {
 
         // release the component
         this._adopted.delete(component as Component<InnerElement>);
