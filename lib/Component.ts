@@ -43,7 +43,7 @@ export interface ComponentInit {
 };
 
 // export the class
-export class Component<OuterElement extends SVGElement | HTMLElement = HTMLElement, InnerElement extends SVGElement | HTMLElement = HTMLElement> extends Emitter {
+export class Component<OuterElement extends SVGElement | HTMLElement = HTMLElement, InnerElement extends SVGElement | HTMLElement = OuterElement> extends Emitter {
 
     /**
      *  An HTML or SVG element. Depending in which document context the component
@@ -59,7 +59,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
     /**
      *  A set of adopted components by this one.
      */
-    private readonly _adopted:Set<Component<InnerElement>> = new Set();
+    private readonly _adopted:Set<Component<InnerElement,HTMLElement|SVGElement>> = new Set();
 
     /**
      *  The constructor.
@@ -125,7 +125,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
      *  @param  Component   The component to adopt.
      *  @return Component   The adopted component.
      */
-    adopt<C extends Component<InnerElement>>(component:C) : C {
+    adopt<C extends Component<InnerElement, SVGElement|HTMLElement>>(component:C) : C {
 
         // add the component to the adopted ones
         this._adopted.add(component);
@@ -155,7 +155,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
      *  @param Component    The component to install inside this one.
      *  @variadic           The parameters for the component.
      */
-    emplace<C extends Component<InnerElement>>(Widget: new (...a: any[]) => C, ...args:Array<any>) : C {
+    emplace<C extends Component<InnerElement, HTMLElement|SVGElement> = Component<InnerElement>>(Widget: new (...a: any[]) => C, ...args:Array<any>) : C {
 
         // construct the widget
         const widget = new Widget(...args);
@@ -176,7 +176,7 @@ export class Component<OuterElement extends SVGElement | HTMLElement = HTMLEleme
      *  @param  Component|Element
      *  @return Component
      */
-    append(child:HTMLElement|SVGElement|Component<InnerElement>) : this {
+    append(child:HTMLElement|SVGElement|Component<InnerElement,SVGElement|HTMLElement>) : this {
 
         // if we are dealing with a component we want to append the component element to our
         if (child instanceof Component) this.content?.appendChild(child.elem);
