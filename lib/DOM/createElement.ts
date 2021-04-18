@@ -6,7 +6,6 @@
  *  @param  object  A key-value object of attributes to assign to the element.
  *  @return Element The element to create.
  */
-
 export namespace DOM {
 
     export function createElement(tagName:string, attrs:{ [key: string]: string|number } ) : HTMLElement {
