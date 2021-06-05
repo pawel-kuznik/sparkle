@@ -24,6 +24,7 @@ export default class ElementBuilder {
     /**
      *  The constructor for the builder. Specify the type of the element and optionally
      *  a namespace in which the element should be created.
+     *  @todo handle namespace of the element
      */
     constructor(element:string = 'DIV', namespace = null) {
 
@@ -40,7 +41,7 @@ export default class ElementBuilder {
      */
     element(tagName:string) : ElementBuilder {
 
-        const child = new ElementBuilder();
+        const child = new ElementBuilder(tagName);
         this._children.add(child);
 
         return child;
@@ -56,6 +57,8 @@ export default class ElementBuilder {
         let elem = document.createElement(this._element) as Element;
 
         elem = this._attributes.build(elem);
+
+        for (let elemBuilder of this._children) elem.append(elemBuilder.build());
 
         return elem;
     }

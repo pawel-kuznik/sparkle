@@ -52,5 +52,21 @@ describe('Builder', () => {
             expect(result.children.item(1).tagName).to.equal('SPAN');
             expect(result.children.item(2).tagName).to.equal('IMG');
         });
+
+        it('shoult build nested elements', () => {
+
+            // create builder
+            const builder = new sparkle.Builder();
+            builder.element('DIV').element('SPAN');
+            builder.element('DIV');
+
+            // create result
+            const result = builder.build();
+
+            // expect 2 immediate children
+            expect(result.children.length).to.equal(2);
+            expect(result.children[0].children.length).to.equal(1);
+            expect(result.children[0].children[0].tagName).to.equal('SPAN');
+        });
     });
 });

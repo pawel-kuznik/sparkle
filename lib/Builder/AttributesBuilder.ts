@@ -1,5 +1,6 @@
 /**
- *  This is a class to set attributes on a element.
+ *  This is a class to set attributes on a element. This class allows for setting up
+ *  a single attribute on a specifi element.
  *  @author     Paweł Kuźnik <pawel.kuznik@gmail.com>
  */
 export default class AttributesBuilder {
