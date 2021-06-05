@@ -14,7 +14,8 @@ window.sparkle = {
     // form:       require('./build/form.js'),
     // object:     require('./build/object.js'),
     DOM:        { createElement: require('./build/lib/DOM/createElement.js').DOM.createElement },
-    Builder: {
-        ElementBuilder: require('./build/lib/Builder/ElementBuilder.js').Builder.ElementBuilder
-    }
+    Builder: Object.assign(require('./build/lib/Builder.js').default, {
+        ElementBuilder: require('./build/lib/Builder/ElementBuilder.js').default,
+        AttributesBuilder: require('./build/lib/Builder/AttributesBuilder.js').default
+    })
 };

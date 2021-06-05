@@ -1,10 +1,10 @@
-import { AttributesBuilder } from "./AttributesBuilder";
+import AttributesBuilder from "./AttributesBuilder";
 /**
  *  The class that defines a builder for one element. This class can be configured in terms
  *  of what element should be created, which attributes should be assigned, and what content
  *  should be assigned.
  */
-export class ElementBuilder {
+export default class ElementBuilder {
 
     /**
      *  The element type to create. By default we take a DIV.
@@ -17,12 +17,16 @@ export class ElementBuilder {
     private _attributes:AttributesBuilder = new AttributesBuilder();
 
     /**
+     *  The children builders.
+     */
+    private _children:Set<ElementBuilder> = new Set();
+
+    /**
      *  The constructor for the builder. Specify the type of the element and optionally
      *  a namespace in which the element should be created.
      */
     constructor(element:string = 'DIV', namespace = null) {
 
-        // assign the element.
         this._element = element;
     }
 
@@ -32,15 +36,27 @@ export class ElementBuilder {
     attributes() : AttributesBuilder { return this._attributes; }
 
     /**
+     *  Add a child element that has to be built.
+     */
+    element(tagName:string) : ElementBuilder {
+
+        const child = new ElementBuilder();
+        this._children.add(child);
+
+        return child;
+    }
+
+    /**
      *  Build the element
      */
-    build() : HTMLElement {
+    build() : Element {
 
-        // construct the element
-        const elem = document.createElement(this._element);
+        // construct the element but cast it as Element cause we might be dealing with
+        // HTML or SVG elements and we want to make sure we can deal with both.
+        let elem = document.createElement(this._element) as Element;
 
-        // return constructed element
+        elem = this._attributes.build(elem);
+
         return elem;
     }
 };
-}

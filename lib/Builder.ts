@@ -3,7 +3,7 @@ import ElementBuilder from "./Builder/ElementBuilder";
  *  This is a class that allows specifying a builder. This builder can build a certain structure
  *  of DOM elements and components specified by a recipe.
  */
-export class Builder {
+export default class Builder {
 
     /**
      *  The sub builders.
@@ -17,7 +17,7 @@ export class Builder {
     element(tagName:string) : ElementBuilder {
 
         // construct new element builder
-        const builder = new ElementBuilder(this, tagName);
+        const builder = new ElementBuilder(tagName);
 
         // remember the builder
         this._builders.push(builder);
@@ -29,7 +29,15 @@ export class Builder {
     /**
      *  Build the structure.
      */
-    build() {
+    build() : DocumentFragment {
 
+        // create a document fragment that is built by this builder
+        const result = document.createDocumentFragment();
+
+        // iterate over the builders and create all elements
+        for (let elementBuilder of this._builders) result.append(elementBuilder.build());
+
+        // return the fragment
+        return result;
     }
 }
