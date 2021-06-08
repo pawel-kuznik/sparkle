@@ -1,4 +1,5 @@
 import ElementBuilder from "./Builder/ElementBuilder";
+import BuildProperties from "./BuildProperties"
 /**
  *  This is a class that allows specifying a builder. This builder can build a certain structure
  *  of DOM elements and components specified by a recipe.
@@ -29,7 +30,7 @@ export default class Builder {
     /**
      *  Build the structure.
      */
-    build() : DocumentFragment {
+    build<Props extends BuildProperties>(props:Props|null = null) : DocumentFragment {
 
         // create a document fragment that is built by this builder
         const result = document.createDocumentFragment();

@@ -68,5 +68,11 @@ describe('Builder', () => {
             expect(result.children[0].children.length).to.equal(1);
             expect(result.children[0].children[0].tagName).to.equal('SPAN');
         });
+
+        it('should build according to properties', () => {
+
+            
+
+        });
     });
 });

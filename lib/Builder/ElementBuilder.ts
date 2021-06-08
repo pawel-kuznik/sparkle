@@ -1,4 +1,5 @@
 import AttributesBuilder from "./AttributesBuilder";
+import BuildProperties from "./../BuildProperties";
 /**
  *  The class that defines a builder for one element. This class can be configured in terms
  *  of what element should be created, which attributes should be assigned, and what content
